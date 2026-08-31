@@ -3,6 +3,8 @@
 .env
 __pycache__
 
+java/target/
+
 data.json
 DESIGN.md
 STORAGE.md
