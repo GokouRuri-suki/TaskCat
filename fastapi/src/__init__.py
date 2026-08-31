@@ -1,6 +1,10 @@
-from routes import task
 from fastapi import FastAPI
 
+from src.routes import task_router
 
-app = FastAPI()
+version = "ver1.0"
+
+app = FastAPI(version=version, title="TaskCat")
+app.include_router(task_router, prefix=f"/TaskCat/api/{version}", tags=["Task"])
+
 
