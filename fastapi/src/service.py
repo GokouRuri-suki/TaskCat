@@ -4,7 +4,6 @@ import uuid
 from datetime import datetime, timezone
 from typing import List, Optional
 
-from .audio import playAudio
 from .schemas import SyncResponseModel, TaskCreateModel, TaskItemModel, TaskUpdateModel
 from .store import load_tasks, save_tasks
 
@@ -37,7 +36,6 @@ async def get_all_tasks() -> List[TaskItemModel]:
         return sorted(active_tasks, key=lambda t: t.priority)
     return await asyncio.to_thread(_get)
 
-@playAudio("fastapi/src/sounds/notification.wav")
 async def create_task(payload: TaskCreateModel) -> TaskItemModel:
     """
     创建新任务，初始版本号为 1。
@@ -254,9 +252,6 @@ async def sync_tasks(client_tasks: Optional[List[TaskItemModel]] = None) -> Sync
             updated_items = sorted(updated_items, key=lambda t: t.priority)
 
             has_updates = server_absorbed_updates or len(updated_items) > 0
-
-            if has_updates:
-                play_default_sound()  # 尝试播放默认提示音
 
             return SyncResponseModel(
                 items=updated_items,
