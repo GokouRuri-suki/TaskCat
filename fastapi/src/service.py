@@ -236,6 +236,8 @@ async def sync_tasks(client_tasks: Optional[List[TaskItemModel]] = None) -> Sync
                     server_task.modify_int = client_task.modify_int
                     server_task.updated_at = client_task.updated_at
                     server_absorbed_updates = True
+                    # 更新client_versions中的版本号，避免后续判断出错
+                    client_versions[client_task.id] = client_task.modify_int
 
             if server_absorbed_updates:
                 save_tasks(server_tasks)
@@ -245,6 +247,7 @@ async def sync_tasks(client_tasks: Optional[List[TaskItemModel]] = None) -> Sync
             updated_items = []
             for task in server_tasks:
                 client_version = client_versions.get(task.id, 0)
+                # 如果客户端版本更低，或者客户端没有这个任务
                 if task.modify_int > client_version:
                     updated_items.append(task)
 
